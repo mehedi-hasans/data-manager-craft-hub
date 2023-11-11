@@ -3,6 +3,7 @@
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate,login
 
 def index(request):
     if request.method == 'POST':
@@ -21,4 +22,15 @@ def index(request):
     return render(request, 'index.html')
 
 def loginPage(request):
-    return render(request, 'login.html')
+    if request.method=="POST":
+        username=request.POST.get("username")
+        pass1=request.POST.get("password")
+        user=authenticate(request,username=username,password=pass1)
+        
+        if user is not None:
+            login(request,user)
+            return HttpResponse("username found")
+        else:
+            return HttpResponse("username not found")
+    
+    return render(request,"login.html")
